@@ -14,8 +14,10 @@
 
 package hideji.hayakawa.faixaazul
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -23,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.ktx.awaitMap
@@ -54,6 +57,15 @@ class MainActivity : AppCompatActivity() {
 
             // Wait for map to finish loading
             googleMap.awaitMapLoad()
+            googleMap.setOnMapClickListener(object :GoogleMap.OnMapClickListener {
+                override fun onMapClick(latlng :LatLng) {
+                    val gmmIntentUri =
+                    Uri.parse("https://www.google.com/maps/dir/?api=1&destination=${latlng.latitude},${latlng.longitude}")
+                    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                    mapIntent.setPackage("com.google.android.apps.maps")
+                    startActivity(mapIntent)
+                }
+            })
 
             lateinit var polylineOptionsArray : ArrayList<PolylineOptions>
 
