@@ -19,6 +19,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
@@ -60,10 +61,13 @@ class MainActivity : AppCompatActivity() {
             googleMap.setOnMapClickListener(object :GoogleMap.OnMapClickListener {
                 override fun onMapClick(latlng :LatLng) {
                     val gmmIntentUri =
-                    Uri.parse("https://www.google.com/maps/dir/?api=1&destination=${latlng.latitude},${latlng.longitude}")
+                    Uri.parse("geo:0,0?q=${latlng.latitude},${latlng.longitude}")
                     val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-                    mapIntent.setPackage("com.google.android.apps.maps")
-                    startActivity(mapIntent)
+
+                    if (mapIntent.resolveActivity(packageManager) == null)
+                        Toast.makeText(baseContext, "No map app found", Toast.LENGTH_SHORT).show()
+                    else
+                        startActivity(mapIntent)
                 }
             })
 
